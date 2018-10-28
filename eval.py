@@ -8,7 +8,7 @@ def precision_at_10(y_test, pred):
 
     sorted_index = np.argsort(pred)[::-1]
 
-    y_test_sorted = y_test[sorted_index][:round(len(y_test)*0.1) -1]
+    y_test_sorted = y_test[sorted_index][:round(len(y_test)*0.1) - 1]
 
     return sum(y_test_sorted) / len(y_test_sorted)
 
