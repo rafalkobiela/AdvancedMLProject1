@@ -25,7 +25,7 @@ prob = clf.predict_proba(X_test)
 clases = clf.predict(X_test)
 
 print('Logistic regression :',
-      eval.precision_at_10(y_test, prob[:,1]))
+      eval.precision_at_10(y_test, prob[:, 1]))
 
 # Random Forest
 clf = RandomForestClassifier(random_state=42, class_weight='balanced')
@@ -35,7 +35,7 @@ prob = clf.predict_proba(X_test)
 clases = clf.predict(X_test)
 
 print("Random forest:",
-      eval.precision_at_10(y_test, prob[:,1]))
+      eval.precision_at_10(y_test, prob[:, 1]))
 
 # Gradient boosting
 
@@ -46,7 +46,7 @@ prob = clf.predict_proba(X_test)
 clases = clf.predict(X_test)
 
 print("Gradient boosting:",
-      eval.precision_at_10(y_test, prob[:,1]))
+      eval.precision_at_10(y_test, prob[:, 1]))
 
 # XGBoost
 
