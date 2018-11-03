@@ -39,7 +39,7 @@ print("Random forest:",
 
 # Gradient boosting
 
-clf = GradientBoostingClassifier(random_state=42)
+clf = GradientBoostingClassifier()
 clf.fit(X_train, y_train)
 
 prob = clf.predict_proba(X_test)
@@ -47,6 +47,20 @@ clases = clf.predict(X_test)
 
 print("Gradient boosting:",
       eval.precision_at_10(y_test, prob[:, 1]))
+
+
+import pickle
+with open('models/GradientBoostingClassifier-0.6319018.pkl', 'rb') as file:
+    clf = pickle.load(file)
+
+prob = clf.predict_proba(X_test)
+clases = clf.predict(X_test)
+
+print("Gradient boosting2:",
+      eval.precision_at_10(y_test, prob[:, 1]))
+
+
+
 
 # XGBoost
 
@@ -71,4 +85,8 @@ prob = bst.predict(dtest)
 
 print("XGBoost:",
       eval.precision_at_10(y_test, prob))
+
+print(metrics.roc_auc_score(y_test, prob))
+
+imp_index = np.argsort(clf.feature_importances_)
 
