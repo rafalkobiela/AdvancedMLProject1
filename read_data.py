@@ -9,6 +9,9 @@ from sklearn.preprocessing import OneHotEncoder
 def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30):
     df = pd.read_csv('train.txt', sep=' ')
 
+    X_test = pd.read_csv('testx.txt', sep=" ")
+    X_test['class'] = 1
+
     number_of_nulls = df.isna().sum() / df.shape[0]
 
     np.unique(np.round(number_of_nulls, 2), return_counts=True)
@@ -20,21 +23,27 @@ def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30):
     criteria = number_of_nulls < 0.3
 
     df = df[criteria.index[criteria]]
+    X_test = X_test[criteria.index[criteria]]
 
     df.fillna(df.mean(), inplace=True)
+    X_test.fillna(df.mean(), inplace=True)
 
     df.isna().sum() / df.shape[0]
 
     numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 
     new_df = df.select_dtypes(include=numerics)
+    X_test = X_test.select_dtypes(include=numerics)
 
     X = new_df.drop('class', axis=1)
+    X_test = X_test.drop('class', axis=1)
     y = new_df.loc[:, 'class']
 
     scaler = StandardScaler()
     scaler.fit(X)
     X = pd.DataFrame(scaler.transform(X))
+    X_test = pd.DataFrame(scaler.transform(X_test))
+
     y = y.astype(int)
 
     if INCLUDE_CAT:
@@ -67,7 +76,9 @@ def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30):
 
         X.columns = ['Var{}'.format(str(i)) for i in range(X.shape[1])]
 
-    return X, y
+    # preproces test data
+
+    return X, y, X_test
 
 
 if __name__ == "__main__":
