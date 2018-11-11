@@ -11,8 +11,8 @@ import pickle
 
 start_time = time.time()
 
-categorical = False
-unique_values = 30
+categorical = True
+unique_values = 20
 
 X, y, X_test = rd.preprocess_data(INCLUDE_CAT=categorical,
                                   plot=False,
@@ -35,7 +35,7 @@ grid_params_random = {'learning_rate': uniform(0.1, 1),
 
 gbc = GradientBoostingClassifier()
 
-n_iter_search = 40
+n_iter_search = 20
 
 clf = RandomizedSearchCV(gbc,
                          grid_params_random,

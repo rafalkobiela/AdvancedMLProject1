@@ -7,7 +7,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 
 def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30, OHE=True):
-    df = pd.read_csv('http://www.ipipan.eu/~teisseyrep/TEACHING/ZMUM/DANE/Projekt1/train.txt', sep=' ').shape
+    df = pd.read_csv('http://www.ipipan.eu/~teisseyrep/TEACHING/ZMUM/DANE/Projekt1/train.txt', sep=" ")
 
     X_test = pd.read_csv('http://www.ipipan.eu/~teisseyrep/TEACHING/ZMUM/DANE/Projekt1/testx.txt', sep=" ")
 
