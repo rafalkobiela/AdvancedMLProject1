@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
 
-def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30):
+def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30, OHE=True):
     df = pd.read_csv('train.txt', sep=' ')
 
     X_test = pd.read_csv('testx.txt', sep=" ")
@@ -63,16 +63,21 @@ def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30):
 
         df_cat = df_cat.loc[:, cat_cols_to_leave]
 
-        df_cat.fillna(lambda x: x.fillna(x.mode()[0]), inplace=True)
-
         for col in df_cat.columns:
-            label_encoder = LabelEncoder()
-            integer_encoded = label_encoder.fit_transform(df_cat.loc[:, col].astype('str'))
-            onehot_encoder = OneHotEncoder(sparse=False, categories='auto')
-            integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
-            onehot_encoded = onehot_encoder.fit_transform(integer_encoded)
-            tmp_df = pd.DataFrame(onehot_encoded)
-            X = pd.concat([X, tmp_df], axis=1)
+            df_cat[col].fillna(df_cat[col].mode()[0], inplace=True)
+
+        if OHE:
+
+            for col in df_cat.columns:
+                label_encoder = LabelEncoder()
+                integer_encoded = label_encoder.fit_transform(df_cat.loc[:, col].astype('str'))
+                onehot_encoder = OneHotEncoder(sparse=False, categories='auto')
+                integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
+                onehot_encoded = onehot_encoder.fit_transform(integer_encoded)
+                tmp_df = pd.DataFrame(onehot_encoded)
+                X = pd.concat([X, tmp_df], axis=1)
+        else:
+            X = pd.concat([X.reset_index(drop=True), df_cat.reset_index(drop=True)], axis=1, ignore_index=True)
 
         X.columns = ['Var{}'.format(str(i)) for i in range(X.shape[1])]
 

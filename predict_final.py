@@ -23,7 +23,7 @@ with open('models/{}'.format(max_key_score), 'rb') as file:
 
 include_cat = False
 
-X, y, X_test = rd.preprocess_data(include_cat, False, 20)
+X, y, X_test = rd.preprocess_data(include_cat, False, 20, False)
 
 clf = GradientBoostingClassifier(**model.best_params_)
 
