@@ -11,13 +11,13 @@ import pickle
 
 start_time = time.time()
 
-categorical = True
+categorical = False
 unique_values = 30
 
-X, y = rd.preprocess_data(INCLUDE_CAT=categorical,
-                          plot=False,
-                          unique_values=unique_values)
-
+X, y, X_test = rd.preprocess_data(INCLUDE_CAT=categorical,
+                                  plot=False,
+                                  unique_values=unique_values,
+                                  OHE=True)
 
 my_prec = make_scorer(eval.precision_at_10,
                       needs_proba=True,
@@ -71,4 +71,3 @@ with open('models/{}-{}-{}.pkl'.format(str(clf.estimator).split('(')[0],
     pickle.dump(clf, file)
 
 print("--- %s seconds ---" % (time.time() - start_time))
-
