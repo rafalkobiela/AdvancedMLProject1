@@ -15,11 +15,10 @@ def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30, OHE=True):
 
     number_of_nulls = df.isna().sum() / df.shape[0]
 
-    np.unique(np.round(number_of_nulls, 2), return_counts=True)
-
     if plot:
         plt.hist(number_of_nulls, bins=100)
         plt.show()
+
 
     criteria = number_of_nulls < 0.3
 
@@ -28,8 +27,6 @@ def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30, OHE=True):
 
     df.fillna(df.mean(), inplace=True)
     X_test.fillna(df.mean(), inplace=True)
-
-    df.isna().sum() / df.shape[0]
 
     numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 
