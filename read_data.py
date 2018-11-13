@@ -17,6 +17,7 @@ def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30, OHE=True):
 
     if plot:
         plt.hist(number_of_nulls, bins=100)
+        plt.title("Histogram liczby nulli.")
         plt.show()
 
 
