@@ -25,8 +25,9 @@ def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30, OHE=True):
     df = df[criteria.index[criteria]]
     X_test = X_test[criteria.index[criteria]]
 
-    df.fillna(df.mean(), inplace=True)
-    X_test.fillna(df.mean(), inplace=True)
+    means = df.mean()
+    df.fillna(means, inplace=True)
+    X_test.fillna(means, inplace=True)
 
     numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 

@@ -18,12 +18,15 @@ for key in files_dict.keys():
         max_key_score = key
         tmp = files_dict[key]
 
-max_key_score = 'GradientBoostingClassifier-True-0.5233129.pkl'
+print("The best model: ", max_key_score)
+
 
 with open('models/{}'.format(max_key_score), 'rb') as file:
     model = pickle.load(file)
 
 include_cat = max_key_score.split('-')[1] == 'True'
+
+print("Data preparing...")
 
 X, y, X_test = rd.preprocess_data(include_cat, False, 20, True)
 
@@ -32,8 +35,12 @@ X, y, X_test = rd.preprocess_data(include_cat, False, 20, True)
 
 clf = GradientBoostingClassifier(**model.best_params_)
 
+print("Fitting model...")
+
 clf.fit(X, y)
 
 prob = pd.DataFrame({"RAFKOB": clf.predict_proba(X_test)[:, 1]})
 
 prob.to_csv("RAFKOB.txt", index=False)
+
+print("DONE")
