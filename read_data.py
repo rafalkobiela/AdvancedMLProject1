@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
 
-def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30, OHE=True):
+def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=20, OHE=True):
     df = pd.read_csv('http://www.ipipan.eu/~teisseyrep/TEACHING/ZMUM/DANE/Projekt1/train.txt', sep=" ")
 
     X_test = pd.read_csv('http://www.ipipan.eu/~teisseyrep/TEACHING/ZMUM/DANE/Projekt1/testx.txt', sep=" ")
@@ -104,4 +104,5 @@ def preprocess_data(INCLUDE_CAT=True, plot=False, unique_values=30, OHE=True):
 
 
 if __name__ == "__main__":
-    print(preprocess_data(False)[0].shape)
+    print(preprocess_data()[2].shape)
+    y = preprocess_data()[1]

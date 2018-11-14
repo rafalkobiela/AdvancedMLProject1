@@ -6,6 +6,7 @@ from sklearn.metrics.scorer import make_scorer
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import cross_val_score
 from scipy.stats import randint as sp_randint
+import pandas as pd
 import lightgbm as lgb
 from scipy.stats import uniform
 import time
@@ -17,10 +18,17 @@ categorical = True
 unique_values = 20
 
 try:
+
     X = pd.read_csv("data/X.csv", sep='|')
-    y = pd.read_csv("data/y.csv", sep='|')
-    X = pd.read_csv("data/X_test.csv", sep='|')
-except:
+    y = pd.read_csv("data/y.csv", sep='|', header=None)
+    X_test = pd.read_csv("data/X_test.csv", sep='|')
+    print("datasets read from disk")
+    print('X: ', X.shape)
+    print('y: ', y.shape)
+    print('X_test: ', X_test.shape)
+    y = y.astype(int)
+except Exception as e:
+    print(e)
     print("Create dataset")
     X, y, X_test = rd.preprocess_data(INCLUDE_CAT=categorical,
                                       plot=False,
@@ -60,7 +68,7 @@ params = {
 
 gbc = GradientBoostingClassifier()
 
-# gbc = lgb.LGBMClassifier(is_unbalance=True, objective='binary', n_jobs=1)
+# gbc = lgb.LGBMClassifier(is_unbalance=True, objective='binary', n_jobs=1, silent=True)
 
 n_iter_search = 20
 
@@ -76,7 +84,8 @@ print('random search')
 
 clf.fit(X, y)
 
-gbc = lgb.LGBMClassifier(is_unbalance=True, objective='binary', **clf.best_params_)
+gbc = GradientBoostingClassifier(**clf.best_params)
+# gbc = lgb.LGBMClassifier(is_unbalance=True, objective='binary', **clf.best_params_)
 
 scores = cross_val_score(clf, X, y, cv=5, scoring=my_prec)
 
