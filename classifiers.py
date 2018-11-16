@@ -5,6 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import cross_val_score
+from sklearn.metrics.scorer import make_scorer
 # import xgboost as xgb
 from sklearn import metrics
 import lightgbm as lgb
