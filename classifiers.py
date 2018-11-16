@@ -4,63 +4,77 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import cross_val_score
 # import xgboost as xgb
 from sklearn import metrics
 import lightgbm as lgb
 import os
 import eval
 
-X_train = pd.read_csv(os.path.join('data', 'X_train'), sep='|')
-y_train = pd.read_csv(os.path.join('data', 'y_train'), sep='|', header=None)
-X_test = pd.read_csv(os.path.join('data', 'X_test'), sep='|')
-y_test = pd.read_csv(os.path.join('data', 'y_test'), sep='|', header=None)
+# X_train = pd.read_csv(os.path.join('data', 'X_train'), sep='|')
+# y_train = pd.read_csv(os.path.join('data', 'y_train'), sep='|', header=None)
+# X_test = pd.read_csv(os.path.join('data', 'X_test'), sep='|')
+# y_test = pd.read_csv(os.path.join('data', 'y_test'), sep='|', header=None)
 
-y_train = y_train.values.ravel()
-y_test = y_test.values.ravel()
+# y_train = y_train.values.ravel()
+# y_test = y_test.values.ravel()
+
+try:
+
+    X = pd.read_csv("data/X.csv", sep='|')
+    y = pd.read_csv("data/y.csv", sep='|', header=None)
+    X_test = pd.read_csv("data/X_test.csv", sep='|')
+    print("datasets read from disk")
+    print('X: ', X.shape)
+    print('y: ', y.shape)
+    print('X_test: ', X_test.shape)
+    y = y.astype(int)
+except Exception as e:
+    print(e)
+    print("Create dataset")
+    X, y, X_test = rd.preprocess_data(INCLUDE_CAT=categorical,
+                                      plot=False,
+                                      unique_values=unique_values,
+                                      OHE=True)
+
+    X.to_csv('data/X.csv', index=False, sep='|')
+    y.to_csv('data/y.csv', index=False, sep='|')
+    X_test.to_csv('data/X_test.csv', index=False, sep='|')
+    print("dataset created")
+
+my_prec = make_scorer(eval.precision_at_10,
+                      needs_proba=True,
+                      greater_is_better=True)
 
 # Logistic Regression
-clf = LogisticRegression(random_state=42, class_weight='balanced', penalty='l2')
-clf.fit(X_train, y_train)
+clf = LogisticRegression(random_state=42, penalty='l2')
 
-prob = clf.predict_proba(X_test)
-clases = clf.predict(X_test)
+scores = cross_val_score(clf, X, y, cv=5, scoring=my_prec)
 
-print('Logistic regression :',
-      eval.precision_at_10(y_test, prob[:, 1]))
+print('Logistic regression:', np.mean(scores))
 
 # Random Forest
 clf = RandomForestClassifier(random_state=42, class_weight='balanced')
-clf.fit(X_train, y_train)
+scores = cross_val_score(clf, X, y, cv=5, scoring=my_prec)
 
-prob = clf.predict_proba(X_test)
-clases = clf.predict(X_test)
-
-print("Random forest:",
-      eval.precision_at_10(y_test, prob[:, 1]))
+print("Random forest:", np.mean(scores))
 
 # Gradient boosting
 
 clf = GradientBoostingClassifier()
-clf.fit(X_train, y_train)
+scores = cross_val_score(clf, X, y, cv=5, scoring=my_prec)
 
-prob = clf.predict_proba(X_test)
-clases = clf.predict(X_test)
-
-print("Gradient boosting:",
-      eval.precision_at_10(y_test, prob[:, 1]))
-
+print("Gradient boosting:", np.mean(scores))
 
 #Ada
 
 
 clf = AdaBoostClassifier()
-clf.fit(X_train, y_train)
 
-prob = clf.predict_proba(X_test)
-clases = clf.predict(X_test)
+scores = cross_val_score(clf, X, y, cv=5, scoring=my_prec)
 
-print("AdaBoost:",
-      eval.precision_at_10(y_test, prob[:, 1]))
+print("AdaBoost:", np.mean(scores))
+
 
 
 
@@ -108,10 +122,7 @@ params = {
 clf = lgb.LGBMClassifier(
    **params
 )
-clf.fit(X_train, y_train)
 
-prob = clf.predict_proba(X_test)
-clases = clf.predict(X_test)
+scores = cross_val_score(clf, X, y, cv=5, scoring=my_prec)
 
-print("LGBM:",
-      eval.precision_at_10(y_test, prob[:, 1]))
+print("LGBM:", np.mean(scores))
